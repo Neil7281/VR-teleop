@@ -1,0 +1,93 @@
+control:
+  keyboard:
+    angle_step: 5
+    enabled: true
+    gripper_step: 10.0
+    pos_step: 0.01
+  pybullet:
+    enabled: true
+  vr:
+    enabled: true
+gripper:
+  # reBot B601-DM: official calibration sets motor zero with jaws CLOSED
+  # (motor.set_zero_position() called while gripper is closed). Range is
+  # 0° (closed) to -270° (fully open). Use a partial-open angle so the
+  # gripper has headroom; increase magnitude (toward -270) for a wider
+  # open position.
+  # SO100: gripper range is 0° to 45° (open=0, closed=45)
+  open_angle: -135.0
+  closed_angle: 0.0
+ik:
+  use_reference_poses: true
+  reference_poses_file: reference_poses.json
+  position_error_threshold: 0.001
+  # Reduced from 0.05 → 0.02 m: IK only switches to a new seed pose if it
+  # improves position accuracy by >2 cm (was 5 cm).  Prevents sudden arm jumps.
+  hysteresis_threshold: 0.02
+  movement_penalty_weight: 0.01
+network:
+  host_ip: 0.0.0.0
+  https_port: 8443
+  websocket_port: 8442
+paths:
+  urdf_path: URDF/SO100/so100.urdf
+robot:
+  # Robot type: "so100" (Feetech servos, 6-DOF) or "rebot" (Damiao CAN, 7-DOF)
+  type: reBot
+  left_arm:
+    enabled: false
+    name: Left Arm
+    port: /dev/ttyACM0
+    # reBot CAN adapter: "damiao" = Damiao USB serial bridge (default for B601-DM)
+    #                    "socketcan" = hardware CAN (can0, can1, ...)
+    can_adapter: damiao
+    dm_serial_baud: 921600
+  right_arm:
+    enabled: true
+    name: Right Arm
+    port: /dev/ttyACM0
+    can_adapter: damiao
+    dm_serial_baud: 921600
+  # 100 Hz control loop (was 50 Hz / 0.02 s) — halves position-update latency
+  send_interval: 0.01
+  vr_to_robot_scale: 0.7
+  # reBot only: full VR-controller orientation drives the end-effector (6-DOF).
+  # Set to false for safe bring-up — holds orientation fixed and controls
+  # position only (still via the official 6-DOF IK).
+  rebot_orientation_enabled: true
+  # reBot motion tuning (live — just restart teleop):
+  #   motor speed: higher = tighter tracking / less lag, lower = gentler
+  #   filter alpha: lower = smoother but more lag (1.0 = no smoothing)
+  rebot_motor_velocity_deg_s: 250
+  rebot_pos_filter_alpha: 0.4
+  rebot_orient_filter_alpha: 0.3
+  # Trajectory tracking: the end-effector traces the path toward your hand at up
+  # to these Cartesian speeds (lower = smoother path-following, more lag; raise
+  # for snappier/tighter tracking).
+  rebot_max_lin_vel_m_s: 0.5
+  rebot_max_ang_vel_deg_s: 180
+  # Sensitivity tuning for over-responsive joints:
+  #   orientation_scale: wrist gain vs hand rotation (1.0=1:1, lower=gentler wrist)
+  #   joint_max_vel_deg_s: per-joint speed cap [pan, lift, elbow, w_flex, w_yaw,
+  #     w_roll] — lower a value to calm a twitchy joint (pan + wrists eased here)
+  rebot_orientation_scale: 0.6
+  rebot_joint_max_vel_deg_s: [150, 250, 250, 180, 180, 180]
+  # Jerk-limited online trajectory generation (Ruckig) — smoothness shock
+  # absorber on joint commands. Lower accel/jerk = smoother but rounder corners
+  # / more lag; higher = sharper/snappier. (max velocity = joint_max_vel above.)
+  rebot_otg_max_accel_deg_s2: 2000
+  rebot_otg_max_jerk_deg_s3: 20000
+  # One Euro adaptive position filter: mincutoff lower = steadier when still;
+  # beta higher = snappier during fast motion.
+  rebot_oneeuro_mincutoff: 1.0
+  rebot_oneeuro_beta: 0.02
+  # Joint control mode: "pos_vel" (default, safe) or "mit" (impedance: pos+vel
+  # reference + per-joint kp/kd + gravity feedforward — smoothest & compliant).
+  # MIT bring-up: verify gravity-float first, then keep gains conservative.
+  rebot_control_mode: pos_vel
+  rebot_mit_kp: [120, 120, 120, 18, 18, 18]   # manufacturer defaults (DM4340/DM4310)
+  rebot_mit_kd: [8, 8, 8, 2, 2, 2]
+  rebot_gravity_ff: true
+ssl:
+  certfile: cert.pem
+  keyfile: key.pem

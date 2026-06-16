@@ -1,1 +1,56 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+build/
+dist/
+downloads/
+eggs/
+.eggs/
+sdist/
+wheels/
+*.egg-info/
+*.egg
+.installed.cfg
+MANIFEST
+
+# --- Virtual environments ---
 .venv/
+venv/
+env/
+ENV/
+.Python
+
+# --- Testing / coverage / type checkers ---
+.cache/
+.pytest_cache/
+.tox/
+.nox/
+.coverage
+.coverage.*
+htmlcov/
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.pyre/
+.pytype/
+
+# --- Editors / IDE / AI assistants ---
+.vscode/
+.idea/
+.cursor/
+.spyderproject
+.spyproject
+.ropeproject
+CLAUDE.md
+
+# --- Secrets / certificates (never commit) ---
+*.pem
+key.pem
+cert.pem
+.env
+
+# --- OS ---
+.DS_Store
+Thumbs.db

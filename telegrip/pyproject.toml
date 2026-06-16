@@ -1,0 +1,53 @@
+[build-system]
+requires = ["setuptools >= 61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "roboinn-teleop"
+version = "1.0.0"
+description = "RoboInn — VR Teleoperation System for the SO100 Dual-Arm Robot"
+authors = [
+    {name = "RoboInn", email = "contact@roboinn.ai"},
+]
+keywords = ["robotics", "teleoperation", "vr", "robot-control", "so100", "feetech"]
+
+dependencies = [
+    "numpy",
+    "scipy",
+    "websockets",
+    "pyserial",
+    "feetech-servo-sdk",
+    "pyyaml",
+]
+
+requires-python = ">=3.9"
+
+[project.optional-dependencies]
+pybullet = [
+    "pybullet",
+]
+rebot = [
+    # CAN bus communication for reBot B601-DM Damiao motors
+    "python-can>=4.0",
+    # Official reBot kinematics/IK is vendored under telegrip/vendor/rebot_kinematics
+    # (see its NOTICE.md); pinocchio is its only runtime dependency.
+    "pin>=3.0",
+]
+dev = [
+    "pytest",
+    "pytest-asyncio",
+    "black",
+    "flake8",
+    "mypy",
+]
+
+[project.scripts]
+telegrip = "telegrip.main:main_cli"
+telegrip-calibrate = "telegrip.calibrate:main"
+
+[project.urls]
+Homepage = "https://github.com/roboinn/vr-teleop"
+Repository = "https://github.com/roboinn/vr-teleop"
+
+[tool.setuptools]
+packages = ["telegrip", "telegrip.core", "telegrip.inputs", "telegrip.driver"]

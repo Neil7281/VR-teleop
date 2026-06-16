@@ -1,0 +1,15 @@
+# Core requirements for RoboInn teleoperation package
+# For development with pinned versions, use: pip install -r requirements-dev.txt
+# For installation as a package, use: pip install -e .
+
+numpy
+scipy
+websockets
+pyserial
+feetech-servo-sdk
+pyyaml>=6.0
+
+# For development
+pytest
+black
+flake8

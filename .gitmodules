@@ -1,6 +1,0 @@
-[submodule "lerobot"]
-	path = lerobot
-	url = https://github.com/huggingface/lerobot.git
-[submodule "telegrip"]
-	path = telegrip
-	url = https://github.com/DipFlip/telegrip.git
